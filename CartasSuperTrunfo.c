@@ -45,10 +45,12 @@ int main(){
     printf("Área: %.3f km²\n", AreaKm);
     printf("PIB: %d bilhões de reais\n", pib);
     printf("Número de pontos turísticos: %i\n", numeros_pontos_turisticos);
+    printf("Densidade populacional %.2f habitantes/km²\n", populacao/AreaKm);
+    printf("PIB per capita: %.2f mil reais\n", pib/populacao);
     
     // agora a mesma coisa para a carta 2 (basicamente uim ctrl c e v )
 
-    printf("Segunda carta");
+    printf("Segunda carta\n");
 
     printf("Digite a sigla do estado (apenas uma letra): \n");
     scanf(" %c", &estado);
@@ -79,6 +81,8 @@ int main(){
     printf("Área: %.3f km²\n", AreaKm);
     printf("PIB: %d bilhões de reais\n", pib);
     printf("Número de pontos turísticos: %i\n", numeros_pontos_turisticos);
+    printf("Densidade populacional %.2f habitantes/km²\n", populacao/AreaKm);
+    printf("PIB per capita: %.2f mil reais\n", pib/populacao);
     printf("Fim do programa!\n");
     return 0;
 

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roadmap Interativo de Backend</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Sand -->
+    <!-- Application Structure Plan: A aplicação foi estruturada com uma navegação principal em barra lateral e uma área de conteúdo principal. Esta abordagem de "dashboard" permite ao usuário focar em uma grande área de conhecimento por vez (ex: Fundamentos, Bancos de Dados), evitando a sobrecarga de informação de uma lista única e longa. Clicar em uma categoria na barra lateral atualiza dinamicamente o conteúdo exibido, proporcionando um fluxo de exploração claro e controlado. Esta estrutura foi escolhida por ser intuitiva e eficiente para navegar em um conteúdo denso e hierárquico como um roadmap de desenvolvimento. -->
+    <!-- Visualization & Content Choices: O conteúdo do roadmap é apresentado em cartões interativos. Cada cartão representa um tópico principal e lista seus sub-tópicos com indicadores visuais para as recomendações (Recomendado, Alternativa, Opcional), traduzindo a legenda do documento original em um design de interface claro. Para fornecer uma visão geral quantitativa, um gráfico de rosca (Donut Chart) feito com Chart.js visualiza a distribuição de sub-tópicos entre as principais categorias. Esta escolha tem o objetivo de dar ao usuário uma noção rápida da "densidade" de cada área de estudo. A interação principal é a troca de seções via menu, atualizando dinamicamente os cartões visíveis. Esta abordagem organiza a informação de forma lógica e adiciona um elemento visual de síntese dos dados. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #fdfbf8;
+        color: #4b4b4b;
+      }
+      .sidebar-link {
+        transition: all 0.2s ease-in-out;
+        border-left: 3px solid transparent;
+      }
+      .sidebar-link.active {
+        border-left-color: #818cf8;
+        background-color: #e0e7ff;
+        color: #4338ca;
+        font-weight: 600;
+      }
+      .sidebar-link:hover {
+        background-color: #f3f4f6;
+      }
+      .content-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      }
+      .content-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+      .legend-dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="flex flex-col md:flex-row min-h-screen">
+      <aside
+        id="sidebar"
+        class="w-full md:w-64 bg-stone-50 border-r border-stone-200 p-4 md:p-6 shrink-0"
+      >
+        <h1 class="text-2xl font-bold text-indigo-600 mb-2">Roadmap Backend</h1>
+        <p class="text-sm text-stone-500 mb-6">
+          Uma jornada interativa de aprendizado.
+        </p>
+        <nav id="nav-menu" class="space-y-2"></nav>
+        <div class="mt-8 pt-6 border-t border-stone-200">
+          <h3 class="font-semibold text-stone-700 mb-3">Legenda</h3>
+          <ul class="text-sm space-y-2">
+            <li class="flex items-center">
+              <span class="legend-dot bg-emerald-500"></span>Recomendado
+            </li>
+            <li class="flex items-center">
+              <span class="legend-dot bg-violet-500"></span>Alternativa
+            </li>
+            <li class="flex items-center">
+              <span class="legend-dot bg-amber-500"></span>Opcional
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="flex-1 p-4 md:p-8 lg:p-10">
+        <div id="content-area"></div>
+      </main>
+    </div>
+
+    <script>
+      const roadmapData = [
+        {
+          category: "Fundamentos",
+          description:
+            "Esta seção aborda os conceitos essenciais que formam a base de todo o desenvolvimento web backend. Compreender como a internet funciona, escolher uma linguagem de programação e dominar o controle de versão são os primeiros passos cruciais na jornada de qualquer desenvolvedor.",
+          topics: [
+            {
+              title: "Internet",
+              items: [
+                { text: "Como a internet funciona?", type: "recommended" },
+                { text: "O que é HTTP?", type: "recommended" },
+                { text: "O que é um Nome de Domínio?", type: "recommended" },
+                { text: "O que é hospedagem?", type: "recommended" },
+                { text: "DNS e como funciona?", type: "recommended" },
+                {
+                  text: "Navegadores e como eles funcionam?",
+                  type: "recommended",
+                },
+              ],
+            },
+            {
+              title: "Escolha uma Linguagem",
+              items: [
+                { text: "JavaScript (Node.js)", type: "recommended" },
+                { text: "Python", type: "recommended" },
+                { text: "Java", type: "recommended" },
+                { text: "Go", type: "alternative" },
+                { text: "Ruby", type: "alternative" },
+                { text: "C#", type: "alternative" },
+                { text: "PHP", type: "optional" },
+                { text: "Rust", type: "optional" },
+              ],
+            },
+            {
+              title: "Sistemas de Controle de Versão",
+              items: [
+                { text: "Git", type: "recommended" },
+                { text: "GitHub", type: "recommended" },
+                { text: "GitLab", type: "alternative" },
+                { text: "Bitbucket", type: "alternative" },
+              ],
+            },
+          ],
+        },
+        {
+          category: "Bancos de Dados",
+          description:
+            "Os dados são o coração de quase todas as aplicações. Nesta seção, exploramos os diferentes tipos de bancos de dados, desde os tradicionais relacionais até as soluções NoSQL modernas. Aprender a modelar, armazenar e consultar dados de forma eficiente é uma habilidade fundamental.",
+          topics: [
+            {
+              title: "Bancos de Dados Relacionais",
+              items: [
+                { text: "PostgreSQL", type: "recommended" },
+                { text: "MySQL", type: "recommended" },
+                { text: "MariaDB", type: "alternative" },
+                { text: "MS SQL", type: "alternative" },
+                { text: "SQLite", type: "optional" },
+              ],
+            },
+            {
+              title: "Bancos de Dados NoSQL",
+              items: [
+                { text: "Documentos: MongoDB", type: "recommended" },
+                { text: "Chave-Valor: Redis", type: "recommended" },
+                { text: "Tempo Real: Firebase", type: "alternative" },
+                { text: "Grafos: Neo4j", type: "optional" },
+                { text: "Colunas: Cassandra", type: "optional" },
+              ],
+            },
+            {
+              title: "Mais sobre Bancos de Dados",
+              items: [
+                { text: "ORMs", type: "recommended" },
+                { text: "ACID", type: "recommended" },
+                { text: "Transações", type: "recommended" },
+                { text: "Normalização", type: "recommended" },
+                { text: "Índices de Banco de Dados", type: "recommended" },
+                { text: "Replicação de Dados", type: "alternative" },
+                { text: "Sharding", type: "optional" },
+                { text: "Teorema CAP", type: "optional" },
+              ],
+            },
+          ],
+        },
+        {
+          category: "APIs & Segurança",
+          description:
+            "A comunicação entre cliente e servidor é feita através de APIs. Aqui, você aprenderá a projetar, construir e proteger essas interfaces. A segurança não é uma opção, mas uma necessidade, e entender os princípios de caching otimizará a performance da sua aplicação.",
+          topics: [
+            {
+              title: "Aprenda sobre APIs",
+              items: [
+                { text: "REST", type: "recommended" },
+                { text: "JSON APIs", type: "recommended" },
+                { text: "Autenticação (JWT, OAuth)", type: "recommended" },
+                { text: "GraphQL", type: "alternative" },
+                { text: "gRPC", type: "optional" },
+              ],
+            },
+            {
+              title: "Caching",
+              items: [
+                { text: "Lado do Servidor: Redis", type: "recommended" },
+                { text: "CDN", type: "recommended" },
+                { text: "Lado do Cliente", type: "optional" },
+              ],
+            },
+            {
+              title: "Segurança Web",
+              items: [
+                { text: "HTTPS", type: "recommended" },
+                { text: "CORS", type: "recommended" },
+                { text: "Riscos OWASP", type: "recommended" },
+                { text: "Hashing (Bcrypt)", type: "recommended" },
+                { text: "SSL/TLS", type: "alternative" },
+              ],
+            },
+          ],
+        },
+        {
+          category: "Qualidade & Deploy",
+          description:
+            "Escrever código é apenas parte do trabalho. Garantir que ele funcione corretamente e entregá-lo de forma confiável aos usuários é igualmente importante. Esta seção cobre testes automatizados e práticas de CI/CD para automatizar o processo de build e deploy.",
+          topics: [
+            {
+              title: "Testes",
+              items: [
+                { text: "Testes de Unidade", type: "recommended" },
+                { text: "Testes de Integração", type: "recommended" },
+                { text: "Testes Funcionais", type: "alternative" },
+              ],
+            },
+            {
+              title: "CI/CD",
+              items: [
+                { text: "GitHub Actions", type: "recommended" },
+                { text: "Jenkins", type: "alternative" },
+                { text: "GitLab CI", type: "alternative" },
+              ],
+            },
+          ],
+        },
+        {
+          category: "Arquitetura & Design",
+          description:
+            "À medida que as aplicações crescem, a forma como o código é estruturado torna-se vital. Aqui, você aprenderá sobre diferentes padrões de arquitetura, princípios de design de software e o uso de containers para empacotar e executar suas aplicações de forma consistente.",
+          topics: [
+            {
+              title: "Design e Arquitetura de Software",
+              items: [
+                {
+                  text: "Padrões de Arquitetura (Monolito, Microsserviços)",
+                  type: "recommended",
+                },
+                {
+                  text: "Princípios de Design (GoF, DDD, TDD)",
+                  type: "recommended",
+                },
+                { text: "Serverless", type: "alternative" },
+                { text: "Service Mesh", type: "optional" },
+              ],
+            },
+            {
+              title: "Containerização vs Virtualização",
+              items: [
+                { text: "Docker", type: "recommended" },
+                { text: "Kubernetes", type: "recommended" },
+                { text: "LXC", type: "optional" },
+              ],
+            },
+          ],
+        },
+        {
+          category: "Escala & Tópicos Avançados",
+          description:
+            "Quando sua aplicação precisa atender a milhares de usuários, novos desafios surgem. Esta seção final explora técnicas para escalar sistemas, tópicos avançados como message brokers e a importância da observabilidade para manter tudo funcionando sem problemas.",
+          topics: [
+            {
+              title: "Tópicos Avançados",
+              items: [
+                {
+                  text: "Message Brokers (RabbitMQ, Kafka)",
+                  type: "recommended",
+                },
+                {
+                  text: "Motores de Busca (Elasticsearch)",
+                  type: "alternative",
+                },
+                { text: "WebSockets", type: "alternative" },
+              ],
+            },
+            {
+              title: "Construindo para Escala",
+              items: [
+                { text: "Conhecimento de Infraestrutura", type: "recommended" },
+                {
+                  text: "Observabilidade (Monitoramento, Logging)",
+                  type: "recommended",
+                },
+                {
+                  text: "Estratégias de Mitigação (Circuit Breaker)",
+                  type: "alternative",
+                },
+                { text: "Tipos de Escalabilidade", type: "optional" },
+              ],
+            },
+            {
+              title: "Visão Geral dos Tópicos",
+              isChart: true,
+            },
+          ],
+        },
+      ];
+
+      const navMenu = document.getElementById("nav-menu");
+      const contentArea = document.getElementById("content-area");
+      const typeClasses = {
+        recommended: "border-l-4 border-emerald-500",
+        alternative: "border-l-4 border-violet-500",
+        optional: "border-l-4 border-amber-500",
+      };
+
+      function renderContent(categoryName) {
+        const categoryData = roadmapData.find(
+          (cat) => cat.category === categoryName
+        );
+        if (!categoryData) return;
+
+        contentArea.innerHTML = `
+                <div class="fade-in">
+                    <h2 class="text-3xl font-bold text-stone-800 mb-2">${
+                      categoryData.category
+                    }</h2>
+                    <p class="text-stone-600 mb-8 max-w-3xl">${
+                      categoryData.description
+                    }</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${categoryData.topics
+                          .map((topic) => {
+                            if (topic.isChart) {
+                              return `
+                                <div class="col-span-1 md:col-span-2 lg:col-span-3 p-6 bg-white rounded-xl border border-stone-200 shadow-sm content-card">
+                                    <h3 class="font-semibold text-lg text-stone-700 mb-4">${topic.title}</h3>
+                                    <div class="chart-container relative mx-auto w-full max-w-lg h-80 md:h-96">
+                                        <canvas id="topicsChart"></canvas>
+                                    </div>
+                                </div>`;
+                            }
+                            return `
+                            <div class="p-6 bg-white rounded-xl border border-stone-200 shadow-sm content-card">
+                                <h3 class="font-semibold text-lg text-stone-700 mb-4">${
+                                  topic.title
+                                }</h3>
+                                <ul class="space-y-3">
+                                    ${topic.items
+                                      .map(
+                                        (item) => `
+                                        <li class="flex items-center text-stone-600 pl-3 ${
+                                          typeClasses[item.type]
+                                        }">
+                                            ${item.text}
+                                        </li>
+                                    `
+                                      )
+                                      .join("")}
+                                </ul>
+                            </div>`;
+                          })
+                          .join("")}
+                    </div>
+                </div>
+            `;
+
+        if (categoryData.topics.some((t) => t.isChart)) {
+          renderChart();
+        }
+
+        document.querySelectorAll(".sidebar-link").forEach((link) => {
+          link.classList.remove("active");
+          if (link.textContent === categoryName) {
+            link.classList.add("active");
+          }
+        });
+      }
+
+      function renderChart() {
+        const ctx = document.getElementById("topicsChart")?.getContext("2d");
+        if (!ctx) return;
+
+        const data = {
+          labels: roadmapData.map((c) => c.category),
+          datasets: [
+            {
+              label: "Nº de Sub-Tópicos",
+              data: roadmapData.map((c) =>
+                c.topics.reduce(
+                  (acc, t) => acc + (t.items ? t.items.length : 0),
+                  0
+                )
+              ),
+              backgroundColor: [
+                "#34D399",
+                "#818CF8",
+                "#A78BFA",
+                "#FBBF24",
+                "#F87171",
+                "#60A5FA",
+              ],
+              borderColor: "#FDFBF8",
+              borderWidth: 4,
+              hoverOffset: 8,
+            },
+          ],
+        };
+
+        new Chart(ctx, {
+          type: "doughnut",
+          data: data,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  padding: 20,
+                  font: {
+                    size: 14,
+                    family: "'Inter', sans-serif",
+                  },
+                },
+              },
+              tooltip: {
+                padding: 12,
+                titleFont: { size: 16, weight: "bold" },
+                bodyFont: { size: 14 },
+              },
+            },
+            cutout: "65%",
+          },
+        });
+      }
+
+      function init() {
+        roadmapData.forEach((cat) => {
+          const link = document.createElement("a");
+          link.href = "#";
+          link.textContent = cat.category;
+          link.className =
+            "block py-2 px-4 rounded-md text-stone-700 sidebar-link";
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            renderContent(cat.category);
+          });
+          navMenu.appendChild(link);
+        });
+        renderContent(roadmapData[0].category);
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>
